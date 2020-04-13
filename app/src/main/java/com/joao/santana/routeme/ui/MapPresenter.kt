@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import com.joao.santana.routeme.R
+import com.joao.santana.routeme.extensions.toParam
 import com.joao.santana.routeme.models.Directions
 import com.joao.santana.routeme.services.DirectionsService
 import kotlinx.coroutines.GlobalScope
@@ -22,8 +23,8 @@ class MapPresenter(
 
     override fun onConnected(): LocationRequest {
         return LocationRequest().apply {
-            interval = 1000
-            fastestInterval = 1000
+            interval = INTERVAL
+            fastestInterval = INTERVAL
             priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         }
     }
@@ -63,11 +64,11 @@ class MapPresenter(
         }
     }
 
-    private fun LatLng.toParam(): String = "$latitude,$longitude"
-
     companion object {
+        const val INTERVAL: Long = 1000L
+        const val DRAW_WIDTH: Float = 10F
+
         private const val MODE: String = ""
-        private const val DRAW_WIDTH: Float = 10F
         private const val ROUTE_PADDING_PIXELS: Int = 200
     }
 }
