@@ -18,21 +18,15 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.joao.santana.routeme.R
 import com.joao.santana.routeme.models.Directions
-import com.joao.santana.routeme.services.DirectionsService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
@@ -76,13 +70,14 @@ class MapActivity : FragmentActivity(), MapContract.View {
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onPlaceSelected(place: Place) {
         googleMap.clear()
         googleMap.addMarker(MarkerOptions().position(place.latLng!!))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
 
-        presenter.getDirections(getString(R.string.google_maps_key), getLocation(), place.latLng!!)
+        if (isPermissionGranted()) {
+            presenter.getDirections(getString(R.string.google_maps_key), getLocation(), place.latLng!!)
+        }
     }
 
     override suspend fun onDirectionsSuccess(directions: Directions, start: LatLng, end: LatLng) {
