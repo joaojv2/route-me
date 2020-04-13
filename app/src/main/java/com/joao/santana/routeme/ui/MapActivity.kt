@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -25,6 +26,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.joao.santana.routeme.R
 import com.joao.santana.routeme.models.Directions
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.inject
@@ -39,6 +41,8 @@ class MapActivity : FragmentActivity(), MapContract.View {
     private var googleMap: GoogleMap by Delegates.notNull()
     private var locationManager: LocationManager by Delegates.notNull()
     private var googleApiClient: GoogleApiClient by Delegates.notNull()
+
+    private var lastPlace: Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +60,13 @@ class MapActivity : FragmentActivity(), MapContract.View {
                 setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
                 setOnPlaceSelectedListener(this@MapActivity)
             }
+
+        btn_direction.setOnClickListener {
+            lastPlace?.let {
+                presenter.getDirections(getString(R.string.google_maps_key), getLocation(), it.latLng!!)
+                btn_direction.visibility = View.GONE
+            }
+        }
     }
 
     override fun onMapReady(map: GoogleMap?) {
@@ -76,7 +87,8 @@ class MapActivity : FragmentActivity(), MapContract.View {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
 
         if (isPermissionGranted()) {
-            presenter.getDirections(getString(R.string.google_maps_key), getLocation(), place.latLng!!)
+            lastPlace = place
+            btn_direction.visibility = View.VISIBLE
         }
     }
 

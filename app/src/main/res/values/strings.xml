@@ -2,4 +2,7 @@
     <string name="app_name">Route Me</string>
     <string name="base_url">https://maps.googleapis.com/</string>
     <string name="google_maps_key">AIzaSyAHQveGEbwhgsI2zhw8-GmOmxN5__16nO8</string>
+
+
+    <string name="directions_button_label">Directions</string>
 </resources>
