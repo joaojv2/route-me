@@ -32,7 +32,7 @@ class MapPresenter(
     override fun drawRoute(directions: Directions): PolylineOptions {
         return PolylineOptions().apply {
             directions.routes[0].legs[0].steps.forEach { step ->
-                add(PolyUtil.decode(step.polyline.points)[0])
+                PolyUtil.decode(step.polyline.points).forEach { add(it) }
             }
 
             color(R.color.quantum_bluegrey100).width(DRAW_WIDTH)
